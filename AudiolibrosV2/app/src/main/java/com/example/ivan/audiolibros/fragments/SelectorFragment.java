@@ -10,6 +10,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -50,6 +53,7 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
 
     @Override public View onCreateView(LayoutInflater inflador, ViewGroup contenedor, Bundle savedInstanceState) {
         View vista = inflador.inflate(R.layout.fragment_selector, contenedor, false);
+        setHasOptionsMenu(true);
         recyclerView = (RecyclerView) vista.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(actividad,2));
         recyclerView.setAdapter(adaptador);
@@ -122,7 +126,9 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
             return true;
         } });
 
-            return vista; }
+            return vista;
+
+    }
 
     @Override
     public void onAnimationStart(Animation animation) {
@@ -138,5 +144,22 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
     @Override
     public void onAnimationRepeat(Animation animation) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+       // inflater.inflate(R.menu.menu_selector, menu);
+       // super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_ultimo) {
+            ((MainActivity) actividad).irUltimoVisitado();
+            return true;
+        } else if (id == R.id.menu_buscar) {
+            return true; }
+        return super.onOptionsItemSelected(item);
     }
 }
