@@ -1,6 +1,8 @@
 package com.example.ivan.audiolibros;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,11 +65,12 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
     // Usando como base el ViewHolder y lo personalizamos
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int posicion) {
+    public void onBindViewHolder(final ViewHolder holder, int posicion) {
         Libro libro = vectorLibros.elementAt(posicion);
         holder.portada.setImageResource(libro.recursoImagen);
         holder.titulo.setText(libro.titulo);
     }
+
 
     // Indicamos el número de elementos de la lista
 

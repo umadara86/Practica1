@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,9 +55,16 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
     @Override public View onCreateView(LayoutInflater inflador, ViewGroup contenedor, Bundle savedInstanceState) {
         View vista = inflador.inflate(R.layout.fragment_selector, contenedor, false);
         setHasOptionsMenu(true);
+
         recyclerView = (RecyclerView) vista.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(actividad,2));
         recyclerView.setAdapter(adaptador);
+
+        DefaultItemAnimator animator = new DefaultItemAnimator();
+        animator.setAddDuration(2000);
+        animator.setMoveDuration(2000);
+        recyclerView.setItemAnimator(animator);
+
         adaptador.setOnItemClickListener(new View.OnClickListener() {
 
             @Override
@@ -78,6 +86,13 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
                 public void onClick(DialogInterface dialog, int opcion) {
                     switch (opcion) {
                     case 0: //Compartir
+                        Snackbar.make(v,"¿Estás seguro que quieres compartir?", Snackbar.LENGTH_LONG).setAction("SI", new View.OnClickListener() {
+                            @Override public void onClick(View view) {
+                                Animation anim = AnimationUtils.loadAnimation(actividad, R.anim.agrandar);
+                                anim.setAnimationListener((Animation.AnimationListener) SelectorFragment.this);
+                                v.startAnimation(anim);
+                            } })
+                                .show();
                         Libro libro = vectorLibros.elementAt(id);
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("text/plain");
@@ -113,7 +128,8 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
                         //vectorLibros.add(vectorLibros.elementAt(id));
                         int posicion = recyclerView.getChildLayoutPosition(v);
                         adaptador.insertar((Libro) adaptador.getItem(posicion));
-                        adaptador.notifyDataSetChanged();
+                        //adaptador.notifyDataSetChanged();
+                        adaptador.notifyItemInserted(0);
                         Snackbar.make(v,"Libro insertado", Snackbar.LENGTH_INDEFINITE) .setAction("OK", new View.OnClickListener() {
                             @Override public void onClick(View view) { } })
                                 .show();
@@ -161,5 +177,10 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
         } else if (id == R.id.menu_buscar) {
             return true; }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onResume(){
+        ((MainActivity) getActivity()).mostrarElementos(true);
+        super.onResume();
     }
 }

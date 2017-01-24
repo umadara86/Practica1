@@ -71,7 +71,7 @@ public class AdaptadorLibrosFiltro extends AdaptadorLibros {
     }
 
     public void insertar(Libro libro){
-        vectorSinFiltro.add(libro);
+        vectorSinFiltro.add(0, libro);
         recalculaFiltro();
     }
 }
