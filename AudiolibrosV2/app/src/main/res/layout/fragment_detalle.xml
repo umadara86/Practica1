@@ -45,21 +45,6 @@
 
     <com.example.ivan.audiolibros.ZoomSeekBar
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:padding="10dp"
-        android:id="@+id/seekbar1"
-        app:altoBar="40dp"
-        app:altoGuia="4dp"
-        app:altoNumeros="15dp"
-        app:altoPalanca="40dp"
-        app:altoRegla="10dp"
-        app:altoTexto="12dp"
-        app:anchoPalanca="10dp"
-
-        android:layout_gravity="center_vertical" />
-
-    <com.example.ivan.audiolibros.ZoomSeekBar
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="20dp"
         android:id="@+id/seekbar2"
@@ -74,6 +59,10 @@
         app:colorPalanca="#FF0000"
         app:colorRegla="#B0B070"
         app:colorTexto="#00A0A0"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"
+        android:layout_below="@+id/portada"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="127dp" />
 
 </RelativeLayout>

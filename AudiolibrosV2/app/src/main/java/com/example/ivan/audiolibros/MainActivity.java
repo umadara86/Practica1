@@ -10,14 +10,11 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -30,11 +27,6 @@ import com.example.ivan.audiolibros.fragments.DetalleFragment;
 import com.example.ivan.audiolibros.fragments.PreferenciasFragment;
 import com.example.ivan.audiolibros.fragments.SelectorFragment;
 
-import static android.R.id.toggle;
-import static android.support.v7.recyclerview.R.styleable.RecyclerView;
-import static com.example.ivan.audiolibros.R.id.appBarLayout;
-import static com.example.ivan.audiolibros.R.id.tabs;
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView recyclerView;
@@ -45,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout tabs;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
+
+    private LibroSharedPreferenceStorage libroStorage;
 
 
     @Override
@@ -74,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        libroStorage = new LibroSharedPreferenceStorage(this);
 
         // Navigation Drawer
         ActionBar actionBar = getSupportActionBar();
@@ -132,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
                 adaptador.notifyDataSetChanged();
             }
+
+
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {} });
     }
@@ -144,21 +142,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MenuItem searchItem = menu.findItem(R.id.menu_buscar);
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(
-                new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextChange(String query) {
-                        adaptador.setBusqueda(query);
-                        adaptador.notifyDataSetChanged();
-                    return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        return false;
-                    }
-
-                });
+        SearchObservable searchObservable = new SearchObservable();
+        searchObservable.addObserver(adaptador);
+        searchView.setOnQueryTextListener(searchObservable);
 
 
        /* MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
@@ -237,16 +223,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void irUltimoVisitado() {
-        SharedPreferences pref = getSharedPreferences(
+       /* SharedPreferences pref = getSharedPreferences(
             "com.example.audiolibros_internal", MODE_PRIVATE);
         int id = pref.getInt("ultimo", -1);
-        if (id >= 0) { mostrarDetalle(id);
+        if (id >= 0) { mostrarDetalle(id);*/
+        if (libroStorage.hasLastBook()) {
+            mostrarDetalle(libroStorage.getLastBook());
+
         } else {
             Toast.makeText(this,"Sin última vista",Toast.LENGTH_LONG).show();
         }
     }
 
-    public void mostrarElementos(boolean mostrar) { appBarLayout.setExpanded(mostrar);
+    public void mostrarElementos(boolean mostrar) {
+        appBarLayout.setExpanded(mostrar);
         toggle.setDrawerIndicatorEnabled(mostrar);
         if (mostrar) {
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);

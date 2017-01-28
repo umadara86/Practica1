@@ -34,18 +34,19 @@ import java.io.IOException;
 
 public class DetalleFragment extends Fragment implements View.OnTouchListener, MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl, onConectarListener {
     public static String ARG_ID_LIBRO = "id_libro";
-    MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
     MediaController mediaController;
     private View vista;
+    public int duracion;
 
 
     @Override public View onCreateView(LayoutInflater inflador, ViewGroup contenedor, Bundle savedInstanceState) {
 
         View vista = inflador.inflate(R.layout.fragment_detalle, contenedor, false);
         this.vista=vista;
-        ZoomSeekBar conectar1 = (ZoomSeekBar) vista.findViewById(R.id.seekbar1);
+
         ZoomSeekBar conectar2 = (ZoomSeekBar) vista.findViewById(R.id.seekbar2);
-        conectar1.setOnConectarListener(this);
+
         conectar2.setOnConectarListener(this);
 
         Bundle args = getArguments();
@@ -82,6 +83,7 @@ public class DetalleFragment extends Fragment implements View.OnTouchListener, M
 
     public void ponInfoLibro(int id) {
         ponInfoLibro(id, getView());
+        duracion = mediaPlayer.getDuration();
     }
 
     @Override public void onPrepared(MediaPlayer mediaPlayer) {
@@ -184,7 +186,8 @@ public class DetalleFragment extends Fragment implements View.OnTouchListener, M
 
     @Override public void onResume(){
         DetalleFragment detalleFragment = (DetalleFragment) getFragmentManager().findFragmentById(R.id.detalle_fragment);
-        if (detalleFragment == null ) {((MainActivity) getActivity()).mostrarElementos(false);
+        if (detalleFragment == null ) {
+            ((MainActivity) getActivity()).mostrarElementos(false);
         }
         super.onResume();
     }

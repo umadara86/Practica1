@@ -15,6 +15,7 @@ import java.util.Vector;
 public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHolder> {
     private LayoutInflater inflador;
     private View.OnClickListener onClickListener;
+    private ClickAction clickAction = new EmptyClickAction();
 
     //Crea Layouts a partir del XML
      protected Vector<Libro> vectorLibros;
@@ -51,13 +52,18 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
         this.onClickListener = onClickListener;
     }
 
+    public void setClickAction(ClickAction clickAction) {
+        this.clickAction = clickAction;
+    }
+
+
     // Creamos el ViewHolder con las vista de un elemento sin personalizar
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflamos la vista desde el xml
         View v = inflador.inflate(R.layout.elemento_selector, null);
-        v.setOnClickListener(onClickListener);
+        //v.setOnClickListener(onClickListener);
         v.setOnLongClickListener(onLongClickListener);
         return new ViewHolder(v);
     }
@@ -65,10 +71,16 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
     // Usando como base el ViewHolder y lo personalizamos
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int posicion) {
+    public void onBindViewHolder(final ViewHolder holder, final int posicion) {
         Libro libro = vectorLibros.elementAt(posicion);
         holder.portada.setImageResource(libro.recursoImagen);
         holder.titulo.setText(libro.titulo);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+                public void onClick(View v) {
+                 clickAction.execute(posicion);
+            }
+        });
     }
 
 

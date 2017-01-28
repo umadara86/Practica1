@@ -25,7 +25,9 @@ import com.example.ivan.audiolibros.AdaptadorLibrosFiltro;
 import com.example.ivan.audiolibros.Aplicacion;
 import com.example.ivan.audiolibros.Libro;
 import com.example.ivan.audiolibros.MainActivity;
+import com.example.ivan.audiolibros.OpenDetailClickAction;
 import com.example.ivan.audiolibros.R;
+import com.example.ivan.audiolibros.SearchObservable;
 
 import java.util.Vector;
 
@@ -65,18 +67,21 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
         animator.setMoveDuration(2000);
         recyclerView.setItemAnimator(animator);
 
-        adaptador.setOnItemClickListener(new View.OnClickListener() {
+        adaptador.setClickAction(new OpenDetailClickAction((MainActivity) getActivity()));
+
+        /*adaptador.setOnItemClickListener(new View.OnClickListener() {
 
             @Override
                 public void onClick(View v) {
                 /*Toast.makeText(actividad, "Seleccionado el elemento: " +
-                    recyclerView.getChildAdapterPosition(v), Toast.LENGTH_SHORT).show();*/
+                    recyclerView.getChildAdapterPosition(v), Toast.LENGTH_SHORT).show();
                 //((MainActivity) actividad).mostrarDetalle(recyclerView.getChildAdapterPosition(v));
 
                 ((MainActivity) actividad).mostrarDetalle((int) adaptador.getItemId(recyclerView.getChildAdapterPosition(v)));
 
                 }
-        });
+        });*/
+
         adaptador.setOnItemLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(final View v) {
             final int id = recyclerView.getChildAdapterPosition(v);
@@ -166,6 +171,7 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
        // inflater.inflate(R.menu.menu_selector, menu);
        // super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     @Override

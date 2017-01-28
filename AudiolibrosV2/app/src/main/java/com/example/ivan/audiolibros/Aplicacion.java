@@ -36,6 +36,7 @@ public class Aplicacion extends Application {
     }
 
     public static AtomicBoolean getLectorImagenes() {
+
         return null;
     }
 }

@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.ivan.audiolibros.fragments.DetalleFragment;
+
 
 /**
  * Created by Ivan on 9/1/17.
@@ -19,13 +21,15 @@ public class ZoomSeekBar extends View {
 
     private onConectarListener escuchador;
 
+    public DetalleFragment detalleFragment;
+
     // Valor a controlar
-    private int val = 160; // valor seleccionado
-    private int valMin = 100; // valor mínimo
+    private int val = 0; // valor seleccionado
+    private int valMin = 0; // valor mínimo
     private int valMax = 200; // valor máximo
-    private int escalaMin = 150; // valor mínimo visualizado
-    private int escalaMax = 180; // valor máximo visualizado
-    private int escalaIni = 100; // origen de la escala
+    private int escalaMin = 0; // valor mínimo visualizado
+    private int escalaMax = 100; // valor máximo visualizado
+    private int escalaIni = 0; // origen de la escala
     private int escalaRaya = 2; // cada cuantas unidades una rayas
     private int escalaRayaLarga = 5; // cada cuantas rayas una larga
 
@@ -56,6 +60,7 @@ public class ZoomSeekBar extends View {
 
     public ZoomSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
+        //escalaMax = detalleFragment.duracion;
         float dp = getResources().getDisplayMetrics().density;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ZoomSeekBar, 0, 0);
         try {
@@ -96,6 +101,9 @@ public class ZoomSeekBar extends View {
 
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //escalaMax = .getDuration();
+
+
 
             // Dibujamos Barra con palanca
         canvas.drawRect(guiaRect, guiaPaint);
@@ -107,6 +115,8 @@ public class ZoomSeekBar extends View {
         palancaRect.set(x - anchoPalanca / 2, y, x + 3 * anchoPalanca / 2, y + altoPalanca);
 
                 // Dibujamos Escala
+
+        //escalaMax = DetalleFragment.mediaPlayer.getDuration();
         int v = escalaIni;
         while (v <= escalaMax) {
             if (v >= escalaMin) {
@@ -130,18 +140,23 @@ public class ZoomSeekBar extends View {
     @Override public boolean onTouchEvent(MotionEvent event) { int x_0, y_0, x_1, y_1;
         x_0 = (int) event.getX(0);
         y_0 = (int) event.getY(0);
-        int val_0 = escalaMin + (x_0-xIni) * (escalaMax-escalaMin) / ancho; if (event.getPointerCount() > 1) {
-            x_1 = (int) event.getX(1); y_1 = (int) event.getY(1); } else {
+        int val_0 = escalaMin + (x_0-xIni) * (escalaMax-escalaMin) / ancho;
+        if (event.getPointerCount() > 1) {
+            x_1 = (int) event.getX(1);
+            y_1 = (int) event.getY(1);
+        } else {
             x_1 = x_0; y_1 = y_0;
         }
-        int val_1 = escalaMin + (x_1 - xIni) * (escalaMax - escalaMin) / ancho; switch (event.getAction()
+        int val_1 = escalaMin + (x_1 - xIni) * (escalaMax - escalaMin) / ancho;
+        switch (event.getAction()
                 & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 if (palancaRect.contains(x_0, y_0)) {
                     estado = Estado.PALANCA_PULSADA;
                 } else if (
                         barRect.contains(x_0, y_0)) {
-                    if (val_0 > val) val++; else val--;
+                    if (val_0 > val) val++;
+                    else val--;
                     invalidate(barRect);
                 } else if (
                         escalaRect.contains(x_0, y_0)) {
@@ -179,10 +194,12 @@ public class ZoomSeekBar extends View {
                 }
                 break; }
         return true; }
-    int ponDentroRango(int val, int valMin, int valMax) { if (val < valMin) {
+    int ponDentroRango(int val, int valMin, int valMax) {
+        if (val < valMin) {
         return valMin;
     } else if (val > valMax) {
-        return valMax; } else {
+        return valMax;
+        } else {
         return val; }
     }
 
