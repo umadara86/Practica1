@@ -77,7 +77,8 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int posicion) {
         Libro libro = vectorLibros.elementAt(posicion);
         Aplicacion aplicacion = (Aplicacion) contexto.getApplicationContext();
-        aplicacion.getLectorImagenes().get(libro.urlImagen,
+        aplicacion.getLectorImagenes().get(
+                libro.urlImagen,
                 new ImageLoader.ImageListener() {
                     @Override public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                         Bitmap bitmap = response.getBitmap();
