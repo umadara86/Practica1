@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+
 import java.util.Vector;
 
 public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHolder> {
@@ -73,7 +76,17 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int posicion) {
         Libro libro = vectorLibros.elementAt(posicion);
-        holder.portada.setImageResource(libro.recursoImagen);
+        Aplicacion aplicacion = (Aplicacion) contexto.getApplicationContext();
+        aplicacion.getLectorImagenes().get(libro.urlImagen,
+                new ImageLoader.ImageListener() {
+                    @Override public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                        Bitmap bitmap = response.getBitmap();
+                        holder.portada.setImageBitmap(bitmap);
+                    }
+                    @Override public void onErrorResponse(VolleyError error) {
+                        holder.portada.setImageResource(R.drawable.books);
+                    }
+                });
         holder.titulo.setText(libro.titulo);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,10 +1,15 @@
 package com.example.ivan.audiolibros;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.util.LruCache;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
 
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 /**
  * Created by Ivan on 3/1/17.
@@ -16,13 +21,31 @@ public class Aplicacion extends Application {
     //private AdaptadorLibros adaptador;
     private AdaptadorLibrosFiltro adaptador;
 
+    private static RequestQueue colaPeticiones;
+    private static ImageLoader lectorImagenes;
+
 
 
     @Override
     public void onCreate() {
         vectorLibros = Libro.ejemploLibros();
+
         //adaptador = new AdaptadorLibros (this, vectorLibros);
         adaptador = new AdaptadorLibrosFiltro (this, vectorLibros);
+
+        lectorImagenes = new ImageLoader(colaPeticiones, new ImageLoader.ImageCache() {
+            private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(10);
+
+            public void putBitmap(String url, Bitmap bitmap) {
+                cache.put(url, bitmap);
+            }
+
+            public Bitmap getBitmap(String url) {
+                return cache.get(url);
+            }
+        });
+
+
     }
     //public AdaptadorLibros getAdaptador() {return adaptador;}
     public AdaptadorLibrosFiltro getAdaptador() {
@@ -35,8 +58,14 @@ public class Aplicacion extends Application {
         return vectorLibros;
     }
 
-    public static AtomicBoolean getLectorImagenes() {
+    public static ImageLoader getLectorImagenes() {
 
         return null;
     }
+
+
+    public static RequestQueue getColaPeticiones() {
+        return colaPeticiones;
+    }
+
 }
