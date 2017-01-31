@@ -26,6 +26,7 @@ import com.example.ivan.audiolibros.Aplicacion;
 import com.example.ivan.audiolibros.Libro;
 import com.example.ivan.audiolibros.MainActivity;
 import com.example.ivan.audiolibros.OpenDetailClickAction;
+import com.example.ivan.audiolibros.OpenOptionsLongClickAction;
 import com.example.ivan.audiolibros.R;
 import com.example.ivan.audiolibros.SearchObservable;
 
@@ -66,56 +67,8 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
         recyclerView.setItemAnimator(animator);
         adaptador.setClickAction(new OpenDetailClickAction((MainActivity) getActivity()));
 
-        adaptador.setOnItemLongClickListener(new View.OnLongClickListener() {
-            public boolean onLongClick(final View v) {
-            final int id = recyclerView.getChildAdapterPosition(v);
-                AlertDialog.Builder menu = new AlertDialog.Builder(actividad);
-                CharSequence[] opciones = { "Compartir", "Borrar ", "Insertar" };
-                menu.setItems(opciones, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int opcion) {
-                    switch (opcion) {
-                    case 0: //Compartir
-                        Snackbar.make(v,"¿Estás seguro que quieres compartir?", Snackbar.LENGTH_LONG).setAction("SI", new View.OnClickListener() {
-                            @Override public void onClick(View view) {
-                                Animation anim = AnimationUtils.loadAnimation(actividad, R.anim.agrandar);
-                                anim.setAnimationListener((Animation.AnimationListener) SelectorFragment.this);
-                                v.startAnimation(anim);
-                            } })
-                                .show();
-                        Libro libro = vectorLibros.elementAt(id);
-                        Intent i = new Intent(Intent.ACTION_SEND);
-                        i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_SUBJECT, libro.titulo);
-                        i.putExtra(Intent.EXTRA_TEXT, libro.urlAudio);
-                        startActivity(Intent.createChooser(i, "Compartir"));
-                        break;
-
-                        case 1: //Borrar
-                            Snackbar.make(v,"¿Estás seguro?", Snackbar.LENGTH_LONG).setAction("SI", new View.OnClickListener() {
-                                @Override public void onClick(View view) {
-                                    Animation anim = AnimationUtils.loadAnimation(actividad, R.anim.menguar);
-                                    anim.setAnimationListener((Animation.AnimationListener) SelectorFragment.this);
-                                    v.startAnimation(anim);
-                                    adaptador.borrar(id);
-                                } })
-                                    .show();
-                            break;
-
-                    case 2: //Insertar
-                        int posicion = recyclerView.getChildLayoutPosition(v);
-                        adaptador.insertar((Libro) adaptador.getItem(posicion));
-                        adaptador.notifyItemInserted(0);
-                        Snackbar.make(v,"Libro insertado", Snackbar.LENGTH_INDEFINITE) .setAction("OK", new View.OnClickListener() {
-                            @Override public void onClick(View view) { } })
-                                .show();
-                        break;
-                } }
-            });
-
-            menu.create().show();
-
-            return true;
-        } });
+        adaptador.setLongClickAction(new OpenOptionsLongClickAction((MainActivity) getActivity(),
+                recyclerView, adaptador, vectorLibros, this));
 
             return vista;
 

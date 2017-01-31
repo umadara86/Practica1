@@ -58,6 +58,9 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
     public void setClickAction(ClickAction clickAction) {
         this.clickAction = clickAction;
     }
+    public void setLongClickAction(LongClickAction clickAction) {
+        this.longClickAction = clickAction;
+    }
 
 
     // Creamos el ViewHolder con las vista de un elemento sin personalizar

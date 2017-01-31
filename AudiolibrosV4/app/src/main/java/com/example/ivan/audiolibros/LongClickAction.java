@@ -7,5 +7,5 @@ import android.view.View;
  */
 
 public interface LongClickAction {
-   void execute (View view);
+   void execute (final View view);
 }
