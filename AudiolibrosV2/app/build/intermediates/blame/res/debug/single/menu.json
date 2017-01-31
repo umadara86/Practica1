@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/build/intermediates/res/merged/debug/menu/activity_main_drawer.xml",
+        "source": "/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/src/main/res/menu/activity_main_drawer.xml"
+    },
+    {
+        "merged": "/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/build/intermediates/res/merged/debug/menu/menu_main.xml",
+        "source": "/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/src/main/res/menu/menu_main.xml"
+    },
+    {
+        "merged": "/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/build/intermediates/res/merged/debug/menu/menu_selector.xml",
+        "source": "/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/src/main/res/menu/menu_selector.xml"
+    }
+]

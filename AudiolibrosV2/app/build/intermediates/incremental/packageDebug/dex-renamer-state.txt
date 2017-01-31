@@ -1,0 +1,4 @@
+#Mon Jan 30 22:03:04 CET 2017
+base.0=/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
+renamed.0=classes.dex
+file.0=/Users/ansoldado/AndroidStudioProjects/AndroidPatrones/Practica1/AudiolibrosV2/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex
