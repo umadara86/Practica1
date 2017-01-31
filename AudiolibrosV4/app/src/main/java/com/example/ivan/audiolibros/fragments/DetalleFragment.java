@@ -45,9 +45,7 @@ public class DetalleFragment extends Fragment implements View.OnTouchListener, M
 
         View vista = inflador.inflate(R.layout.fragment_detalle, contenedor, false);
         this.vista=vista;
-
         ZoomSeekBar conectar2 = (ZoomSeekBar) vista.findViewById(R.id.seekbar2);
-
         conectar2.setOnConectarListener(this);
 
         Bundle args = getArguments();
@@ -166,7 +164,6 @@ public class DetalleFragment extends Fragment implements View.OnTouchListener, M
 
     @Override
     public void onConectar(int valor) {
-        //Toast.makeText(, "Conectando nuevo valor = " + valor, Toast.LENGTH_SHORT).show();
         Snackbar.make(vista, "conectando", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }

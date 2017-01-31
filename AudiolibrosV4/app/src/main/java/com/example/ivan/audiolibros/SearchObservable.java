@@ -8,8 +8,7 @@ import java.util.Observable;
  * Created by Ivan on 28/1/17.
  */
 
-public class SearchObservable extends Observable
-        implements SearchView.OnQueryTextListener {
+public class SearchObservable extends Observable implements SearchView.OnQueryTextListener {
 
     @Override
     public boolean onQueryTextChange(String query) {

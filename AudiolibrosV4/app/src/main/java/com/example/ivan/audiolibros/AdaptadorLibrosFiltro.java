@@ -60,7 +60,14 @@ public class AdaptadorLibrosFiltro extends AdaptadorLibros implements Observer {
     }
 
     public Libro getItem(int posicion) {
-        return vectorSinFiltro.elementAt(indiceFiltro.elementAt(posicion));
+
+        Libro resultadoLibro = vectorSinFiltro.elementAt(indiceFiltro.elementAt(posicion));
+
+        if (resultadoLibro == null) {
+            resultadoLibro = Libro.LIBRO_EMPTY;
+        }
+
+        return resultadoLibro;
     }
 
     public long getItemId(int posicion) {

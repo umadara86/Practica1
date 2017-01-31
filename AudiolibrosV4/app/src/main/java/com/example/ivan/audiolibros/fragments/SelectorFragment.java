@@ -39,7 +39,6 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
 
     private Activity actividad;
     private RecyclerView recyclerView;
-    //private AdaptadorLibros adaptador;
     private AdaptadorLibrosFiltro adaptador;
     private Vector<Libro> vectorLibros;
 
@@ -61,26 +60,11 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
         recyclerView = (RecyclerView) vista.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(actividad,2));
         recyclerView.setAdapter(adaptador);
-
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(2000);
         animator.setMoveDuration(2000);
         recyclerView.setItemAnimator(animator);
-
         adaptador.setClickAction(new OpenDetailClickAction((MainActivity) getActivity()));
-
-        /*adaptador.setOnItemClickListener(new View.OnClickListener() {
-
-            @Override
-                public void onClick(View v) {
-                /*Toast.makeText(actividad, "Seleccionado el elemento: " +
-                    recyclerView.getChildAdapterPosition(v), Toast.LENGTH_SHORT).show();
-                //((MainActivity) actividad).mostrarDetalle(recyclerView.getChildAdapterPosition(v));
-
-                ((MainActivity) actividad).mostrarDetalle((int) adaptador.getItemId(recyclerView.getChildAdapterPosition(v)));
-
-                }
-        });*/
 
         adaptador.setOnItemLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(final View v) {
@@ -105,35 +89,21 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
                         i.putExtra(Intent.EXTRA_TEXT, libro.urlAudio);
                         startActivity(Intent.createChooser(i, "Compartir"));
                         break;
-                    /*case 1: //Borrar
-                        Snackbar.make(v,"¿Estás seguro?", Snackbar.LENGTH_LONG).setAction("SI", new View.OnClickListener() {
-                            @Override
-                                public void onClick(View view) {
-                                //vectorLibros.remove(id);
 
-                                adaptador.borrar(id);
-                                adaptador.notifyDataSetChanged();
-                                } })
-                                .show();
-                        break;*/
                         case 1: //Borrar
                             Snackbar.make(v,"¿Estás seguro?", Snackbar.LENGTH_LONG).setAction("SI", new View.OnClickListener() {
                                 @Override public void onClick(View view) {
                                     Animation anim = AnimationUtils.loadAnimation(actividad, R.anim.menguar);
                                     anim.setAnimationListener((Animation.AnimationListener) SelectorFragment.this);
                                     v.startAnimation(anim);
-
                                     adaptador.borrar(id);
-                                    //adaptador.notifyDataSetChanged();
                                 } })
                                     .show();
                             break;
 
                     case 2: //Insertar
-                        //vectorLibros.add(vectorLibros.elementAt(id));
                         int posicion = recyclerView.getChildLayoutPosition(v);
                         adaptador.insertar((Libro) adaptador.getItem(posicion));
-                        //adaptador.notifyDataSetChanged();
                         adaptador.notifyItemInserted(0);
                         Snackbar.make(v,"Libro insertado", Snackbar.LENGTH_INDEFINITE) .setAction("OK", new View.OnClickListener() {
                             @Override public void onClick(View view) { } })
@@ -169,8 +139,6 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-       // inflater.inflate(R.menu.menu_selector, menu);
-       // super.onCreateOptionsMenu(menu, inflater);
 
     }
 

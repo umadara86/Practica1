@@ -17,8 +17,8 @@ import java.util.Vector;
 
 public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHolder> {
     private LayoutInflater inflador;
-    private View.OnClickListener onClickListener;
     private ClickAction clickAction = new EmptyClickAction();
+    private LongClickAction longClickAction = new EmptyOnLongClickAction();
 
     //Crea Layouts a partir del XML
      protected Vector<Libro> vectorLibros;
@@ -51,9 +51,9 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
         }
     }
 
-    public void setOnItemClickListener(View.OnClickListener onClickListener) {
+    /*public void setOnItemClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
-    }
+    }*/
 
     public void setClickAction(ClickAction clickAction) {
         this.clickAction = clickAction;
@@ -66,8 +66,7 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflamos la vista desde el xml
         View v = inflador.inflate(R.layout.elemento_selector, null);
-        //v.setOnClickListener(onClickListener);
-        v.setOnLongClickListener(onLongClickListener);
+        //v.setOnLongClickListener(onLongClickListener);
         return new ViewHolder(v);
     }
 
@@ -81,6 +80,13 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
             @Override
                 public void onClick(View v) {
                  clickAction.execute(posicion);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v) {
+                longClickAction.execute(v);
+                return false;
             }
         });
         Aplicacion aplicacion = (Aplicacion) contexto.getApplicationContext();

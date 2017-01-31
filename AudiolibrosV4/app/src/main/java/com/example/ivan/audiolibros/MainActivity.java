@@ -52,23 +52,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getFragmentManager().beginTransaction().add(idContenedor, primerFragment)
                 .commit();
 
-       /* if ((findViewById(R.id.contenedor_pequeno) != null) &&
-                (getFragmentManager().findFragmentById(R.id.contenedor_pequeno) == null)){
-            SelectorFragment primerFragment = new SelectorFragment();
-            getFragmentManager().beginTransaction() .add(R.id.contenedor_pequeno, primerFragment).commit();
-        }*/
-
-       // Aplicacion app = (Aplicacion) getApplication();
-        //recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        //recyclerView.setAdapter(app.getAdaptador());
-        //layoutManager = new GridLayoutManager(this, 2);
-        //recyclerView.setLayoutManager(layoutManager);
-
         adaptador = ((Aplicacion) getApplicationContext()).getAdaptador();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         libroStorage = new LibroSharedPreferenceStorage(this);
 
         // Navigation Drawer
@@ -96,13 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
         }
         });
-
-        //app.getAdaptador().setOnItemClickListener(new View.OnClickListener(){
-          //  @Override public void onClick(View v) {
-            //Toast.makeText(MainActivity.this, "Seleccionado el elemento: " + recyclerView.getChildAdapterPosition(v),
-              //      Toast.LENGTH_SHORT).show();
-           // }
-        //});
 
         //Pestañas
         tabs = (TabLayout) findViewById(R.id.tabs);
@@ -136,47 +115,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_selector, menu);
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         MenuItem searchItem = menu.findItem(R.id.menu_buscar);
         SearchView searchView = (SearchView) searchItem.getActionView();
         SearchObservable searchObservable = new SearchObservable();
         searchObservable.addObserver(adaptador);
         searchView.setOnQueryTextListener(searchObservable);
-
-
-       /* MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                adaptador.setBusqueda("");
-                adaptador.notifyDataSetChanged();
-                return true; // Para permitir cierre
-            }
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return false;
-            }
-        });*/
-
-
         return true;
-
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -223,10 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void irUltimoVisitado() {
-       /* SharedPreferences pref = getSharedPreferences(
-            "com.example.audiolibros_internal", MODE_PRIVATE);
-        int id = pref.getInt("ultimo", -1);
-        if (id >= 0) { mostrarDetalle(id);*/
+
         if (libroStorage.hasLastBook()) {
             mostrarDetalle(libroStorage.getLastBook());
 

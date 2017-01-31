@@ -60,7 +60,6 @@ public class ZoomSeekBar extends View {
 
     public ZoomSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        //escalaMax = detalleFragment.duracion;
         float dp = getResources().getDisplayMetrics().density;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ZoomSeekBar, 0, 0);
         try {
@@ -88,10 +87,7 @@ public class ZoomSeekBar extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         xIni = getPaddingLeft();
-        //yIni = getPaddingTop();
         yIni = (getHeight()-altoBar-altoRegla)/2;
-        //yIni = getPaddingTop() + (getHeight()/2);
-
         ancho = getWidth() - getPaddingRight() - getPaddingLeft();
         barRect.set(xIni, yIni, xIni + ancho, yIni + altoBar);
         escalaRect.set(xIni, yIni + altoBar, xIni + ancho, yIni + altoBar + altoNumeros + altoRegla);
@@ -101,9 +97,6 @@ public class ZoomSeekBar extends View {
 
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //escalaMax = .getDuration();
-
-
 
             // Dibujamos Barra con palanca
         canvas.drawRect(guiaRect, guiaPaint);
@@ -115,8 +108,6 @@ public class ZoomSeekBar extends View {
         palancaRect.set(x - anchoPalanca / 2, y, x + 3 * anchoPalanca / 2, y + altoPalanca);
 
                 // Dibujamos Escala
-
-        //escalaMax = DetalleFragment.mediaPlayer.getDuration();
         int v = escalaIni;
         while (v <= escalaMax) {
             if (v >= escalaMin) {
