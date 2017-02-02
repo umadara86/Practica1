@@ -34,10 +34,6 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
         this.contexto = contexto;
     }
 
-    public void setOnItemLongClickListener(View.OnLongClickListener onItemLongClickListener) {
-        this.onLongClickListener = onItemLongClickListener;
-    }
-
     //Creamos nuestro ViewHolder, con los tipos de elementos a modificar
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,10 +46,6 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
             titulo = (TextView) itemView.findViewById(R.id.titulo);
         }
     }
-
-    /*public void setOnItemClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }*/
 
     public void setClickAction(ClickAction clickAction) {
         this.clickAction = clickAction;

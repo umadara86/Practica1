@@ -32,13 +32,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private AdaptadorLibrosFiltro adaptador;
-
     private AppBarLayout appBarLayout;
     private TabLayout tabs;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
-
-    private LibroSharedPreferenceStorage libroStorage;
+    //private LibroStorage libroStorage;
+    private MainController controller;
 
 
     @Override
@@ -55,7 +54,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adaptador = ((Aplicacion) getApplicationContext()).getAdaptador();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        libroStorage = new LibroSharedPreferenceStorage(this);
+
+        controller = new MainController(LibroSharedPreferenceStorage.getInstance(this));
+
+
+        //libroStorage  = LibroSharedPreferenceStorage.getInstance(this);
+
 
         // Navigation Drawer
         ActionBar actionBar = getSupportActionBar();
@@ -153,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    public void mostrarDetalle(int id) {
+    private void mostrarFragmentDetalle(int id) {
         DetalleFragment detalleFragment = (DetalleFragment)
                 getFragmentManager().findFragmentById(R.id.detalle_fragment);
 
@@ -174,10 +178,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         editor.commit();
     }
 
+    public void mostrarDetalle(int id) {
+        mostrarFragmentDetalle(id);
+        controller.saveLastBook(id);
+    }
+
     public void irUltimoVisitado() {
 
-        if (libroStorage.hasLastBook()) {
-            mostrarDetalle(libroStorage.getLastBook());
+        if (controller.libroStorage.hasLastBook()) {
+            mostrarDetalle(controller.libroStorage.getLastBook());
 
         } else {
             Toast.makeText(this,"Sin última vista",Toast.LENGTH_LONG).show();

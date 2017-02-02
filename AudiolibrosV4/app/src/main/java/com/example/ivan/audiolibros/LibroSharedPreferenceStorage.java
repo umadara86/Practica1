@@ -14,7 +14,7 @@ public class LibroSharedPreferenceStorage implements LibroStorage{
     private final Context context;
 
 
-    LibroSharedPreferenceStorage(Context context) {
+    private LibroSharedPreferenceStorage(Context context) {
         this.context = context;
     }
 
@@ -33,9 +33,12 @@ public class LibroSharedPreferenceStorage implements LibroStorage{
 
     public static LibroStorage getInstance(Context context) {
         if(instance == null) {
-
             instance = new LibroSharedPreferenceStorage(context);
         }
         return instance;
+    }
+
+    public int saveLastBook(int id) {
+        return 0;
     }
 }

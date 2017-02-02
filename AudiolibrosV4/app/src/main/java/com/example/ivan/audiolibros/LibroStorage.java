@@ -7,4 +7,5 @@ package com.example.ivan.audiolibros;
 public interface LibroStorage {
     boolean hasLastBook();
     int getLastBook();
+    int saveLastBook(int id);
 }

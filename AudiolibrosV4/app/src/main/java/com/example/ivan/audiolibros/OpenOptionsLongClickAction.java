@@ -21,7 +21,7 @@ import java.util.Vector;
  */
 
 public class OpenOptionsLongClickAction implements LongClickAction{
-    private final MainActivity mainActivity;
+    public final MainActivity mainActivity;
     private RecyclerView recyclerView = null;
     private LayoutInflater inflador;
     private final AdaptadorLibrosFiltro adaptador;
@@ -50,39 +50,44 @@ public class OpenOptionsLongClickAction implements LongClickAction{
             public void onClick(DialogInterface dialog, int opcion) {
                 switch (opcion) {
                     case 0: //Compartir
-                        Snackbar.make(view,"¿Estás seguro que quieres compartir?", Snackbar.LENGTH_LONG).setAction("SI", new View.OnClickListener() {
+                        Snackbar.make(view,"¿Estás seguro que quieres compartir?", Snackbar.LENGTH_INDEFINITE).setAction("SI", new View.OnClickListener() {
                             @Override public void onClick(View v) {
                                 Animation anim = AnimationUtils.loadAnimation(mainActivity, R.anim.agrandar);
-                                anim.setAnimationListener((Animation.AnimationListener) selectorFragment);
+                                anim.setAnimationListener(selectorFragment);
                                 v.startAnimation(anim);
+                                Libro libro = vectorLibros.elementAt(id);
+                                Intent i = new Intent(Intent.ACTION_SEND);
+                                i.setType("text/plain");
+                                i.putExtra(Intent.EXTRA_SUBJECT, libro.titulo);
+                                i.putExtra(Intent.EXTRA_TEXT, libro.urlAudio);
+                                selectorFragment.startActivity(Intent.createChooser(i, "Compartir"));
+                                adaptador.notifyItemChanged(id);
                             } })
                                 .show();
-                        Libro libro = vectorLibros.elementAt(id);
-                        Intent i = new Intent(Intent.ACTION_SEND);
-                        i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_SUBJECT, libro.titulo);
-                        i.putExtra(Intent.EXTRA_TEXT, libro.urlAudio);
-                        selectorFragment.startActivity(Intent.createChooser(i, "Compartir"));
+
                         break;
 
                     case 1: //Borrar
-                        Snackbar.make(view,"¿Estás seguro?", Snackbar.LENGTH_LONG).setAction("SI", new View.OnClickListener() {
+                        Snackbar.make(view,"¿Estás seguro?", Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override public void onClick(View v) {
                                 Animation anim = AnimationUtils.loadAnimation(mainActivity, R.anim.menguar);
-                                anim.setAnimationListener((Animation.AnimationListener) selectorFragment);
+                                anim.setAnimationListener(selectorFragment);
                                 v.startAnimation(anim);
                                 adaptador.borrar(id);
+                                adaptador.notifyItemRemoved(id);
                             } })
                                 .show();
                         break;
 
                     case 2: //Insertar
-                        int posicion = recyclerView.getChildLayoutPosition(view);
-                        adaptador.insertar((Libro) adaptador.getItem(posicion));
-                        adaptador.notifyItemInserted(0);
+                        final int posicion2 = recyclerView.getChildLayoutPosition(view);
                         Snackbar.make(view,"Libro insertado", Snackbar.LENGTH_INDEFINITE) .setAction("OK", new View.OnClickListener() {
-                            @Override public void onClick(View v) { } })
+                            @Override public void onClick(View v) {
+                                adaptador.insertar((Libro) adaptador.getItem(posicion2));
+                                adaptador.notifyItemInserted(0);
+                            } })
                                 .show();
+
                         break;
                 }
             }
