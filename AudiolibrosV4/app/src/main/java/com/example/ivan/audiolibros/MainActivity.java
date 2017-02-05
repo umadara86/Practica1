@@ -3,7 +3,9 @@ package com.example.ivan.audiolibros;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,11 +23,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.example.ivan.audiolibros.fragments.DetalleFragment;
 import com.example.ivan.audiolibros.fragments.PreferenciasFragment;
 import com.example.ivan.audiolibros.fragments.SelectorFragment;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainPresenter.View {
@@ -76,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -115,9 +124,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
             }
 
-
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
-            @Override public void onTabReselected(TabLayout.Tab tab) {} });
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
+
+        // Nombre de usuario
+        SharedPreferences pref = getSharedPreferences( "com.example.audiolibros_internal", MODE_PRIVATE);
+        String name = pref.getString("name", null);
+        View headerLayout = navigationView.getHeaderView(0);
+        TextView txtName = (TextView) headerLayout.findViewById(R.id.txtName);
+        txtName.setText(String.format(getString(R.string.welcome_message), name));
+
+        // Foto de usuario
+        FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
+        Uri urlImagen = usuario.getPhotoUrl();
+        if (urlImagen != null) {
+            NetworkImageView fotoUsuario = (NetworkImageView) headerLayout.findViewById(R.id.imageView);
+            Aplicacion aplicacion = (Aplicacion) getApplicationContext();
+            fotoUsuario.setImageUrl(urlImagen.toString(), aplicacion.getLectorImagenes());
+        }
     }
 
     @Override
@@ -229,6 +255,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_suspense) {
             LibrosSingleton.getInstance().getAdaptadorLibros().setGenero(Libro.G_SUSPENSE);
             LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
+        } else if (id == R.id.nav_signout) {
+            AuthUI.getInstance().signOut(this)
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                SharedPreferences pref = getSharedPreferences(
+                    "com.example.audiolibros_internal", MODE_PRIVATE);
+                    pref.edit().remove("provider").commit();
+                    pref.edit().remove("email").commit();
+                    pref.edit().remove("name").commit();
+                Intent i = new Intent(MainActivity.this,CustomLoginActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK); startActivity(i);
+                finish(); }
+            });
         }
 
 

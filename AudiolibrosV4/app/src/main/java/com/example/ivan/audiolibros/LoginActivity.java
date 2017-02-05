@@ -48,10 +48,11 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setProviders(Arrays.asList(
                     new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-//new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-// new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
-                    .setIsSmartLockEnabled(false).build(), RC_SIGN_IN); }
+                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+                    .setIsSmartLockEnabled(false).build(), RC_SIGN_IN);
+        }
     }
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
