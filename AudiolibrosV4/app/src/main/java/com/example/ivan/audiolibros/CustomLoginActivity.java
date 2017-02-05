@@ -14,6 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,10 +33,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Ivan on 5/2/17.
@@ -53,8 +71,14 @@ public class CustomLoginActivity extends FragmentActivity implements View.OnClic
     private static final int RC_GOOGLE_SIGN_IN = 123;
     private GoogleApiClient googleApiClient;
 
+    //Facebook
+    private CallbackManager callbackManager;
+
+
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState); setContentView(R.layout.activity_custom_login);
+        super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this);
+        setContentView(R.layout.activity_custom_login);
         btnGoogle = (SignInButton) findViewById(R.id.btnGoogle);
         btnGoogle.setOnClickListener(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
@@ -62,11 +86,44 @@ public class CustomLoginActivity extends FragmentActivity implements View.OnClic
                 .build();
         googleApiClient = new GoogleApiClient.Builder(this) .enableAutoManage(this, this) .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        //btnFacebook = (LoginButton) findViewById(R.id.btnFacebook);
-        //btnFacebook.setOnClickListener(this);
+
+        callbackManager = CallbackManager.Factory.create();
+        btnFacebook = (LoginButton) findViewById(R.id.btnFacebook);
+        btnFacebook.setOnClickListener(this);
+        btnFacebook.setReadPermissions("email", "public_profile");
+        btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        facebookAuth(loginResult.getAccessToken());
+                    }
+
+                    @Override public void onCancel() {
+                        showSnackbar(getResources().getString(R.string.error_cancelled));
+                    }
+
+                    @Override public void onError(FacebookException error) {
+                        showSnackbar(error.getLocalizedMessage());
+
+                    }
+        });
+
+        //Twitter
         btnTwitter = (TwitterLoginButton) findViewById(R.id.btnTwitter);
         btnTwitter.setEnabled(true);
-        btnTwitter.setOnClickListener(this);
+        btnTwitter.setCallback(new Callback<TwitterSession>() {
+            @Override public void success(Result<TwitterSession> result) {
+                twitterAuth(result.data);
+            }
+            @Override public void failure(TwitterException exception) {
+                showSnackbar(exception.getLocalizedMessage());
+            }
+        });
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(
+                getString(R.string.twitter_consumer_key),
+                getString(R.string.twitter_consumer_secret));
+        Fabric.with(this, new Twitter(authConfig));
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         inputEmail = (EditText) findViewById(R.id.editTxtEmail);
         inputPassword = (EditText) findViewById(R.id.editTxtPassword);
@@ -82,8 +139,14 @@ public class CustomLoginActivity extends FragmentActivity implements View.OnClic
     @Override public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnGoogle: googleLogin();
-            break;
+                break;
+
+            case R.id.btnFacebook: showProgress();
+                break;
+            case R.id.btnTwitter: showProgress();
+                break;
         }
+
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -91,11 +154,16 @@ public class CustomLoginActivity extends FragmentActivity implements View.OnClic
         if (requestCode == RC_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
-            GoogleSignInAccount account = result.getSignInAccount();
-            googleAuth(account);
-        } else {
-            hideProgress();
-            showSnackbar(getResources().getString(R.string.error_google)); }
+                GoogleSignInAccount account = result.getSignInAccount();
+                googleAuth(account);
+            }  else {
+                hideProgress();
+                showSnackbar(getResources().getString(R.string.error_google));
+            }
+        } else if(requestCode == btnFacebook.getRequestCode())
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        else if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            btnTwitter.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -210,5 +278,38 @@ public class CustomLoginActivity extends FragmentActivity implements View.OnClic
                 }
             }
         });
+    }
+
+    private void facebookAuth(AccessToken accessToken) {
+        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (!task.isSuccessful()) { hideProgress();
+                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                        LoginManager.getInstance().logOut();
+                    }
+                    showSnackbar(task.getException().getLocalizedMessage());
+                } else {
+                    doLogin();
+                }
+            }
+        });
+    }
+
+    private void twitterAuth(TwitterSession session) {
+        AuthCredential credential = TwitterAuthProvider.getCredential(
+                session.getAuthToken().token,
+                session.getAuthToken().secret);
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (!task.isSuccessful()) {
+                        hideProgress();
+                        showSnackbar(task.getException().getLocalizedMessage());
+                    } else { doLogin();
+                    }
+                    }
+                });
     }
 }
