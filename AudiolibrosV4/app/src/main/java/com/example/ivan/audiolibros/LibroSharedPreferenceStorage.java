@@ -3,6 +3,8 @@ package com.example.ivan.audiolibros;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Ivan on 28/1/17.
  */
@@ -23,7 +25,7 @@ public class LibroSharedPreferenceStorage implements LibroStorage{
     }
 
     private SharedPreferences getPreference() {
-        return context.getSharedPreferences(PREF_AUDIOLIBROS, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(PREF_AUDIOLIBROS, MODE_PRIVATE);
     }
 
     public int getLastBook() {
@@ -39,6 +41,11 @@ public class LibroSharedPreferenceStorage implements LibroStorage{
     }
 
     public int saveLastBook(int id) {
-        return 0;
+        SharedPreferences pref = context.getSharedPreferences( "com.example.audiolibros_internal", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("ultimo", id);
+        editor.commit();
+
+        return id;
     }
 }

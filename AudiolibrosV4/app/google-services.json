@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "398152692116",
+    "firebase_url": "https://audiolibros-e19a2.firebaseio.com",
+    "project_id": "audiolibros-e19a2",
+    "storage_bucket": "audiolibros-e19a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398152692116:android:82f479fb500155f9",
+        "android_client_info": {
+          "package_name": "com.example.ivan.audiolibros"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398152692116-2ceeqoo2vmcnpcnt1fc18smqkb7huqht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNHrbfaTGuZjfrYTppuMPeRFIHxOqzfAg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398152692116-2ceeqoo2vmcnpcnt1fc18smqkb7huqht.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

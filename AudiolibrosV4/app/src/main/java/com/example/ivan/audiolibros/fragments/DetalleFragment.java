@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.ivan.audiolibros.Aplicacion;
 import com.example.ivan.audiolibros.Libro;
+import com.example.ivan.audiolibros.LibrosSingleton;
 import com.example.ivan.audiolibros.MainActivity;
 import com.example.ivan.audiolibros.R;
 import com.example.ivan.audiolibros.ZoomSeekBar;
@@ -60,7 +61,7 @@ public class DetalleFragment extends Fragment implements View.OnTouchListener, M
 
 
     private void ponInfoLibro(int id, View vista) {
-        Libro libro = ((Aplicacion) getActivity().getApplication()).getVectorLibros().elementAt(id);
+        Libro libro = LibrosSingleton.getInstance().getVectorLibros().elementAt(id);
         ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
         ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
         Aplicacion aplicacion = (Aplicacion) getActivity().getApplication(); (

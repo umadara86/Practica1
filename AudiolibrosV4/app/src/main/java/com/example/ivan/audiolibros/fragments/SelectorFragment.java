@@ -24,6 +24,7 @@ import com.example.ivan.audiolibros.AdaptadorLibros;
 import com.example.ivan.audiolibros.AdaptadorLibrosFiltro;
 import com.example.ivan.audiolibros.Aplicacion;
 import com.example.ivan.audiolibros.Libro;
+import com.example.ivan.audiolibros.LibrosSingleton;
 import com.example.ivan.audiolibros.MainActivity;
 import com.example.ivan.audiolibros.OpenDetailClickAction;
 import com.example.ivan.audiolibros.OpenOptionsLongClickAction;
@@ -40,17 +41,17 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
 
     private Activity actividad;
     private RecyclerView recyclerView;
-    private AdaptadorLibrosFiltro adaptador;
-    private Vector<Libro> vectorLibros;
+    //private AdaptadorLibrosFiltro adaptador;
+    //private Vector<Libro> vectorLibros;
 
 
     @Override public void onAttach(Activity actividad) {
 
         super.onAttach(actividad);
         this.actividad = actividad;
-        Aplicacion app = (Aplicacion) actividad.getApplication();
-        adaptador = app.getAdaptador();
-        vectorLibros = app.getVectorLibros();
+        //Aplicacion app = (Aplicacion) actividad.getApplication();
+        //adaptador = LibrosSingleton.getInstance().getAdaptadorLibros();
+        //vectorLibros = app.getVectorLibros();
     }
 
 
@@ -60,15 +61,15 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
 
         recyclerView = (RecyclerView) vista.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(actividad,2));
-        recyclerView.setAdapter(adaptador);
+        recyclerView.setAdapter(LibrosSingleton.getInstance().getAdaptadorLibros());
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(2000);
         animator.setMoveDuration(2000);
         recyclerView.setItemAnimator(animator);
-        adaptador.setClickAction(new OpenDetailClickAction((MainActivity) getActivity()));
+        LibrosSingleton.getInstance().getAdaptadorLibros().setClickAction(new OpenDetailClickAction((MainActivity) getActivity()));
 
-        adaptador.setLongClickAction(new OpenOptionsLongClickAction((MainActivity) getActivity(),
-                recyclerView, adaptador, vectorLibros, this));
+        LibrosSingleton.getInstance().getAdaptadorLibros().setLongClickAction(new OpenOptionsLongClickAction((MainActivity) getActivity(),
+                recyclerView, LibrosSingleton.getInstance().getAdaptadorLibros(), LibrosSingleton.getInstance().getVectorLibros(), this));
 
             return vista;
 
@@ -81,7 +82,7 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        adaptador.notifyDataSetChanged();
+        LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
 
     }
 

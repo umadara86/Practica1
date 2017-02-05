@@ -7,6 +7,7 @@ import android.util.LruCache;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,17 +19,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Aplicacion extends Application {
 
-    private Vector<Libro> vectorLibros;
-    private AdaptadorLibrosFiltro adaptador;
+    //private Vector<Libro> vectorLibros;
     private static RequestQueue colaPeticiones;
     private static ImageLoader lectorImagenes;
+    private FirebaseAuth auth;
 
 
 
     @Override
     public void onCreate() {
-        vectorLibros = Libro.ejemploLibros();
-        adaptador = new AdaptadorLibrosFiltro (this, vectorLibros);
+        auth = FirebaseAuth.getInstance();
+        //Se inicializa el vector de libros haciendo uso de libro ejemplo libros dado que sino habria que añadir uno a uno todos los paramentros de cada Libro.
+        LibrosSingleton.getInstance().setVectorLibros(Libro.ejemploLibros());
+        LibrosSingleton.getInstance().setAdaptadorLibros(new AdaptadorLibrosFiltro (this,  LibrosSingleton.getInstance().getVectorLibros()));
         colaPeticiones = Volley.newRequestQueue(this);
         lectorImagenes = new ImageLoader(colaPeticiones, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(10);
@@ -45,16 +48,21 @@ public class Aplicacion extends Application {
 
     }
 
+    public FirebaseAuth getAuth() {
+        return auth;
+    }
+
+/*
     public AdaptadorLibrosFiltro getAdaptador() {
 
         return adaptador;
     }
-
-    public Vector<Libro> getVectorLibros() {
+*/
+/*   public Vector<Libro> getVectorLibros() {
 
         return vectorLibros;
     }
-
+*/
     public static ImageLoader getLectorImagenes() {
 
         return lectorImagenes;

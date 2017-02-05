@@ -71,12 +71,14 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int posicion) {
         Libro libro = vectorLibros.elementAt(posicion);
         holder.titulo.setText(libro.titulo);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
                 public void onClick(View v) {
                  clickAction.execute(posicion);
             }
         });
+
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
             @Override
             public boolean onLongClick(View v) {
@@ -84,6 +86,7 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
                 return false;
             }
         });
+
         Aplicacion aplicacion = (Aplicacion) contexto.getApplicationContext();
         aplicacion.getLectorImagenes().get(libro.urlImagen, new ImageLoader.ImageListener() {
             @Override public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {

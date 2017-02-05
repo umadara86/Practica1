@@ -27,17 +27,20 @@ import com.example.ivan.audiolibros.fragments.DetalleFragment;
 import com.example.ivan.audiolibros.fragments.PreferenciasFragment;
 import com.example.ivan.audiolibros.fragments.SelectorFragment;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainPresenter.View {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private AdaptadorLibrosFiltro adaptador;
+    //private AdaptadorLibrosFiltro adaptador;
     private AppBarLayout appBarLayout;
     private TabLayout tabs;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
+    private SaveLastBook saveLastBook;
     //private LibroStorage libroStorage;
-    private MainController controller;
+   // private MainController controller;
+    private MainPresenter presenter;
 
 
     @Override
@@ -51,16 +54,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getFragmentManager().beginTransaction().add(idContenedor, primerFragment)
                 .commit();
 
-        adaptador = ((Aplicacion) getApplicationContext()).getAdaptador();
+        //adaptador = ((Aplicacion) getApplicationContext()).getAdaptador();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        controller = new MainController(LibroSharedPreferenceStorage.getInstance(this));
-
 
         //libroStorage  = LibroSharedPreferenceStorage.getInstance(this);
-
-
+        saveLastBook = new SaveLastBook(LibroSharedPreferenceStorage.getInstance(this));
+        presenter = new MainPresenter(saveLastBook,LibroSharedPreferenceStorage.getInstance(this), this);
         // Navigation Drawer
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 Snackbar.make(view, "muestra última selección", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                presenter.clickFavoriteButton();
+
         }
         });
 
@@ -97,19 +100,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                 case 0: //Todos
-                    adaptador.setNovedad(false);
-                    adaptador.setLeido(false);
+                    LibrosSingleton.getInstance().getAdaptadorLibros().setNovedad(false);
+                    LibrosSingleton.getInstance().getAdaptadorLibros().setLeido(false);
                     break;
                 case 1: //Nuevos
-                    adaptador.setNovedad(true);
-                    adaptador.setLeido(false);
+                    LibrosSingleton.getInstance().getAdaptadorLibros().setNovedad(true);
+                    LibrosSingleton.getInstance().getAdaptadorLibros().setLeido(false);
                     break;
                 case 2: //Leidos
-                    adaptador.setNovedad(false);
-                    adaptador.setLeido(true);
+                    LibrosSingleton.getInstance().getAdaptadorLibros().setNovedad(false);
+                    LibrosSingleton.getInstance().getAdaptadorLibros().setLeido(true);
                     break;
             }
-                adaptador.notifyDataSetChanged();
+                LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
             }
 
 
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem searchItem = menu.findItem(R.id.menu_buscar);
         SearchView searchView = (SearchView) searchItem.getActionView();
         SearchObservable searchObservable = new SearchObservable();
-        searchObservable.addObserver(adaptador);
+        searchObservable.addObserver(LibrosSingleton.getInstance().getAdaptadorLibros());
         searchView.setOnQueryTextListener(searchObservable);
         return true;
 
@@ -172,25 +175,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaccion.addToBackStack(null);
             transaccion.commit();
         }
-        SharedPreferences pref = getSharedPreferences( "com.example.audiolibros_internal", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("ultimo", id);
-        editor.commit();
+        saveLastBook.execute(id);
     }
 
     public void mostrarDetalle(int id) {
-        mostrarFragmentDetalle(id);
-        controller.saveLastBook(id);
+        this.mostrarFragmentDetalle(id);
     }
 
     public void irUltimoVisitado() {
+        presenter.clickFavoriteButton();
+    }
 
-        if (controller.libroStorage.hasLastBook()) {
-            mostrarDetalle(controller.libroStorage.getLastBook());
-
-        } else {
-            Toast.makeText(this,"Sin última vista",Toast.LENGTH_LONG).show();
-        }
+    @Override
+    public void mostrarNoUltimaVisita() {
+        Toast.makeText(this, "Sin última vista",Toast.LENGTH_LONG).show();
     }
 
     public void mostrarElementos(boolean mostrar) {
@@ -220,17 +218,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_todos) {
-            adaptador.setGenero("");
-            adaptador.notifyDataSetChanged();
+            LibrosSingleton.getInstance().getAdaptadorLibros().setGenero("");
+            LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
         } else if (id == R.id.nav_epico) {
-            adaptador.setGenero(Libro.G_EPICO);
-            adaptador.notifyDataSetChanged();
+            LibrosSingleton.getInstance().getAdaptadorLibros().setGenero(Libro.G_EPICO);
+            LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
         } else if (id == R.id.nav_XIX) {
-            adaptador.setGenero(Libro.G_S_XIX);
-            adaptador.notifyDataSetChanged();
+            LibrosSingleton.getInstance().getAdaptadorLibros().setGenero(Libro.G_S_XIX);
+            LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
         } else if (id == R.id.nav_suspense) {
-            adaptador.setGenero(Libro.G_SUSPENSE);
-            adaptador.notifyDataSetChanged();
+            LibrosSingleton.getInstance().getAdaptadorLibros().setGenero(Libro.G_SUSPENSE);
+            LibrosSingleton.getInstance().getAdaptadorLibros().notifyDataSetChanged();
         }
 
 
