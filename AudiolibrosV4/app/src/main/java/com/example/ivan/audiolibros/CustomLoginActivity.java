@@ -39,6 +39,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -192,6 +196,7 @@ public class CustomLoginActivity extends FragmentActivity implements View.OnClic
             String name = currentUser.getDisplayName();
             String email = currentUser.getEmail();
             String provider = currentUser.getProviders().get(0);
+            guardarUsuario(currentUser);
             SharedPreferences pref = getSharedPreferences("com.example.audiolibros_internal", MODE_PRIVATE);
             pref.edit().putString("provider", provider).commit();
             if (name == null) {
@@ -311,5 +316,22 @@ public class CustomLoginActivity extends FragmentActivity implements View.OnClic
                     }
                     }
                 });
+    }
+
+    void guardarUsuario(final FirebaseUser user) {
+        DatabaseReference usersReference=((Aplicacion) getApplicationContext())
+                .getUsersReference();
+        final DatabaseReference currentUserReference = usersReference.child( user.getUid());
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    currentUserReference.setValue(new User(user.getDisplayName(), user.getEmail()));
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+
+        };
+        currentUserReference.addListenerForSingleValueEvent(userListener);
     }
 }

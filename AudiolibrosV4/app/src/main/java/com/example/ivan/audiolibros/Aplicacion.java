@@ -8,6 +8,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,12 +25,20 @@ public class Aplicacion extends Application {
     private static RequestQueue colaPeticiones;
     private static ImageLoader lectorImagenes;
     private FirebaseAuth auth;
+    private final static String BOOKS_CHILD = "libros";
+    private final static String USERS_CHILD = "usuarios";
+    private DatabaseReference usersReference;
 
 
 
     @Override
     public void onCreate() {
         auth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database.setPersistenceEnabled(true);
+        DatabaseReference booksReference = database.getReference().child(BOOKS_CHILD);
+        usersReference = database.getReference().child(USERS_CHILD);
+
         //Se inicializa el vector de libros haciendo uso de libro ejemplo libros dado que sino habria que añadir uno a uno todos los paramentros de cada Libro.
         LibrosSingleton.getInstance().setVectorLibros(Libro.ejemploLibros());
         LibrosSingleton.getInstance().setAdaptadorLibros(new AdaptadorLibrosFiltro (this,  LibrosSingleton.getInstance().getVectorLibros()));
@@ -50,6 +60,10 @@ public class Aplicacion extends Application {
 
     public FirebaseAuth getAuth() {
         return auth;
+    }
+
+    public DatabaseReference getUsersReference() {
+        return usersReference;
     }
 
 /*
