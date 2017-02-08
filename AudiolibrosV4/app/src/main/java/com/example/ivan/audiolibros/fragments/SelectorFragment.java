@@ -69,7 +69,7 @@ public class SelectorFragment extends Fragment implements Animation.AnimationLis
         LibrosSingleton.getInstance().getAdaptadorLibros().setClickAction(new OpenDetailClickAction((MainActivity) getActivity()));
 
         LibrosSingleton.getInstance().getAdaptadorLibros().setLongClickAction(new OpenOptionsLongClickAction((MainActivity) getActivity(),
-                recyclerView, LibrosSingleton.getInstance().getAdaptadorLibros(), LibrosSingleton.getInstance().getVectorLibros(), this));
+                recyclerView, LibrosSingleton.getInstance().getAdaptadorLibros(), LibrosSingleton.getInstance().getAdaptadorLibros(), this));
 
             return vista;
 

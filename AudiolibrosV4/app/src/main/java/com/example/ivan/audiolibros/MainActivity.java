@@ -35,6 +35,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainPresenter.View {
@@ -144,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Aplicacion aplicacion = (Aplicacion) getApplicationContext();
             fotoUsuario.setImageUrl(urlImagen.toString(), aplicacion.getLectorImagenes());
         }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReferenceFromUrl("https://audiolibros-e19a2.firebaseio.com/libros");
+        LibrosSingleton.getInstance().setAdaptadorLibros(new AdaptadorLibrosFiltro(this.getApplicationContext(),reference ));
     }
 
     @Override
@@ -153,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem searchItem = menu.findItem(R.id.menu_buscar);
         SearchView searchView = (SearchView) searchItem.getActionView();
         SearchObservable searchObservable = new SearchObservable();
+
+
         searchObservable.addObserver(LibrosSingleton.getInstance().getAdaptadorLibros());
         searchView.setOnQueryTextListener(searchObservable);
         return true;

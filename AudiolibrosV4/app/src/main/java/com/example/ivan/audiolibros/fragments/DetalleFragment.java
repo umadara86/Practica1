@@ -40,6 +40,7 @@ public class DetalleFragment extends Fragment implements View.OnTouchListener, M
     MediaController mediaController;
     private View vista;
     public int duracion;
+    private Aplicacion aplicacion;
 
 
     @Override public View onCreateView(LayoutInflater inflador, ViewGroup contenedor, Bundle savedInstanceState) {
@@ -61,7 +62,9 @@ public class DetalleFragment extends Fragment implements View.OnTouchListener, M
 
 
     private void ponInfoLibro(int id, View vista) {
-        Libro libro = LibrosSingleton.getInstance().getVectorLibros().elementAt(id);
+
+        Libro libro = LibrosSingleton.getInstance().getAdaptadorLibros().getItemById(id);
+        //Libro libro = LibrosSingleton.getInstance().getAdaptadorLibros().getItemById(id);
         ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
         ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
         Aplicacion aplicacion = (Aplicacion) getActivity().getApplication(); (

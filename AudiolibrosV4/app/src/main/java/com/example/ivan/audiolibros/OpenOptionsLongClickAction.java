@@ -25,14 +25,16 @@ public class OpenOptionsLongClickAction implements LongClickAction{
     private RecyclerView recyclerView = null;
     private LayoutInflater inflador;
     private final AdaptadorLibrosFiltro adaptador;
-    private final Vector<Libro> vectorLibros;
+    //private final Vector<Libro> vectorLibros;
+    private AdaptadorLibros adaptadorLibros;
     private final SelectorFragment selectorFragment;
 
-    public OpenOptionsLongClickAction(MainActivity mainActivity, RecyclerView recyclerView, AdaptadorLibrosFiltro adaptador, Vector<Libro> vectorLibros, SelectorFragment selectorFragment) {
+    public OpenOptionsLongClickAction(MainActivity mainActivity, RecyclerView recyclerView, AdaptadorLibrosFiltro adaptador, AdaptadorLibros adaptadorLibros, SelectorFragment selectorFragment) {
         this.mainActivity = mainActivity;
         this.recyclerView = recyclerView;
         this.adaptador = adaptador;
-        this.vectorLibros = vectorLibros;
+        this.adaptadorLibros = adaptadorLibros;
+        //this.vectorLibros = vectorLibros;
         this.selectorFragment = selectorFragment;
 
         inflador = (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -55,7 +57,8 @@ public class OpenOptionsLongClickAction implements LongClickAction{
                                 Animation anim = AnimationUtils.loadAnimation(mainActivity, R.anim.agrandar);
                                 anim.setAnimationListener(selectorFragment);
                                 v.startAnimation(anim);
-                                Libro libro = vectorLibros.elementAt(id);
+                                Libro libro = adaptadorLibros.getItem(id);
+                                //Libro libro = vectorLibros.elementAt(id);
                                 Intent i = new Intent(Intent.ACTION_SEND);
                                 i.setType("text/plain");
                                 i.putExtra(Intent.EXTRA_SUBJECT, libro.titulo);
@@ -84,7 +87,7 @@ public class OpenOptionsLongClickAction implements LongClickAction{
                         Snackbar.make(view,"Libro insertado", Snackbar.LENGTH_INDEFINITE) .setAction("OK", new View.OnClickListener() {
                             @Override public void onClick(View v) {
                                 adaptador.insertar((Libro) adaptador.getItem(posicion2));
-                                adaptador.notifyItemInserted(0);
+                                adaptador.notifyItemInserted(adaptador.getItemCount()+1);
                             } })
                                 .show();
 

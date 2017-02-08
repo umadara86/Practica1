@@ -12,25 +12,29 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.Vector;
 
-public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHolder> {
+public class AdaptadorLibros extends FirebaseRecyclerAdapter<Libro, AdaptadorLibros.ViewHolder> {
     private LayoutInflater inflador;
     private ClickAction clickAction = new EmptyClickAction();
     private LongClickAction longClickAction = new EmptyOnLongClickAction();
 
     //Crea Layouts a partir del XML
-     protected Vector<Libro> vectorLibros;
+    //protected Vector<Libro> vectorLibros;
+    protected DatabaseReference booksReference;
 
     // Vector con libros a visualizar
     private Context contexto;
 
     private View.OnLongClickListener onLongClickListener;
 
-    public AdaptadorLibros(Context contexto, Vector<Libro> vectorLibros) {
+    public AdaptadorLibros(Context contexto, DatabaseReference reference) {
+        super(Libro.class, R.layout.elemento_selector, AdaptadorLibros.ViewHolder.class, reference);
         inflador = (LayoutInflater) contexto.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.vectorLibros = vectorLibros;
+        this.booksReference = reference;
         this.contexto = contexto;
     }
 
@@ -65,11 +69,12 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
         return new ViewHolder(v);
     }
 
+
     // Usando como base el ViewHolder y lo personalizamos
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int posicion) {
-        Libro libro = vectorLibros.elementAt(posicion);
+    public void populateViewHolder(final ViewHolder holder, Libro libro, final int posicion) {
+        //Libro libro = vectorLibros.elementAt(posicion);
         holder.titulo.setText(libro.titulo);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +107,9 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
 
     // Indicamos el número de elementos de la lista
 
-    @Override public int getItemCount() {
-        return vectorLibros.size();
-    }
+   // @Override public int getItemCount() {
+   //     return vectorLibros.size();
+    //}
 
 
 }

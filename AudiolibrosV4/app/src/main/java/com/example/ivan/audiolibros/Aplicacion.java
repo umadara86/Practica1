@@ -28,6 +28,7 @@ public class Aplicacion extends Application {
     private final static String BOOKS_CHILD = "libros";
     private final static String USERS_CHILD = "usuarios";
     private DatabaseReference usersReference;
+    private AdaptadorLibrosFiltro adaptador;
 
 
 
@@ -40,8 +41,9 @@ public class Aplicacion extends Application {
         usersReference = database.getReference().child(USERS_CHILD);
 
         //Se inicializa el vector de libros haciendo uso de libro ejemplo libros dado que sino habria que añadir uno a uno todos los paramentros de cada Libro.
-        LibrosSingleton.getInstance().setVectorLibros(Libro.ejemploLibros());
-        LibrosSingleton.getInstance().setAdaptadorLibros(new AdaptadorLibrosFiltro (this,  LibrosSingleton.getInstance().getVectorLibros()));
+        //LibrosSingleton.getInstance().setVectorLibros(Libro.ejemploLibros());
+       // LibrosSingleton.getInstance().setAdaptadorLibros(new AdaptadorLibrosFiltro (this,  LibrosSingleton.getInstance().getAdaptadorLibros()));
+
         colaPeticiones = Volley.newRequestQueue(this);
         lectorImagenes = new ImageLoader(colaPeticiones, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(10);
@@ -55,7 +57,7 @@ public class Aplicacion extends Application {
             }
         });
 
-
+        adaptador = new AdaptadorLibrosFiltro(this,booksReference);
     }
 
     public FirebaseAuth getAuth() {
@@ -94,5 +96,13 @@ public class Aplicacion extends Application {
 
     public static void setLectorImagenes(ImageLoader lectorImagenes) {
         Aplicacion.lectorImagenes = lectorImagenes;
+    }
+
+    public AdaptadorLibrosFiltro getAdaptador() {
+        return adaptador;
+    }
+
+    public void setAdaptador(AdaptadorLibrosFiltro adaptador) {
+        this.adaptador = adaptador;
     }
 }

@@ -23,7 +23,7 @@ public class Libro {
     public final static String G_SUSPENSE = "Suspense";
     public final static String[] G_ARRAY = new String[] {G_TODOS, G_EPICO, G_S_XIX, G_SUSPENSE };
     public final static Libro LIBRO_EMPTY = new Libro("", "anónimo", "http://www.dcomg.upv.es/~jtomas/android/audiolibros/sin_portada.jpg", "", G_TODOS, true, false);
-    private Libro(String titulo, String autor, String urlImagen, String urlAudio, String genero, Boolean novedad, boolean leido) {
+    private Libro(String titulo, String autor, String urlImagen, String urlAudio, String genero, Boolean novedad, Boolean leido) {
         this.titulo = titulo;
         this.autor = autor;
         this.urlImagen = urlImagen;
